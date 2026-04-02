@@ -11,6 +11,6 @@ This document supplements the [canonical org-wide PROJECT_RULES.md](https://gith
 - **ESM only** — no CommonJS.
 - All code is licensed under **Apache 2.0**.
 - Do not add Go, Rust, or other runtime implementations in v1. A second runtime may be considered after adoption materializes.
-- Package stubs should not contain substantive implementation until the architecture and terminology in `status-spec` are stabilized.
+- Package stubs may now contain substantive implementation — the architecture and specification in `status-spec` are stable (Phase 3 complete).
 - Tooling must remain vendor-neutral. No dependencies on commercial product APIs, no phone-home behavior, no commercial onboarding assumptions.
 - Do not create packages beyond the established set (`types`, `core`, `parser`, `emitter`, `validator`, `discovery`) without explicit approval.

@@ -10,12 +10,12 @@ This monorepo contains shared packages for parsing, emitting, validating, and di
 
 | Package | Purpose | Status |
 |---|---|---|
-| [`@open-operational-state/types`](packages/types/) | Canonical TypeScript types for the core model | Stub |
-| [`@open-operational-state/core`](packages/core/) | Core model logic and normalization | Stub |
-| [`@open-operational-state/parser`](packages/parser/) | Response parsers for supported serializations | Stub |
-| [`@open-operational-state/emitter`](packages/emitter/) | Response emitters/generators | Stub |
-| [`@open-operational-state/validator`](packages/validator/) | Conformance validator | Stub |
-| [`@open-operational-state/discovery`](packages/discovery/) | Discovery client | Stub |
+| [`@open-operational-state/types`](packages/types/) | Canonical TypeScript types for the core model | Stub — Phase 4 priority 2 |
+| [`@open-operational-state/core`](packages/core/) | Core model logic and normalization | Stub — Phase 4 priority 2 |
+| [`@open-operational-state/parser`](packages/parser/) | Response parsers for supported serializations | Stub — Phase 4 priority 3 |
+| [`@open-operational-state/emitter`](packages/emitter/) | Response emitters/generators | Stub — Phase 4 priority 4 |
+| [`@open-operational-state/validator`](packages/validator/) | Conformance validator | Stub — Phase 4 priority 1 |
+| [`@open-operational-state/discovery`](packages/discovery/) | Discovery client | Stub — Phase 4 priority 5 |
 
 ## Getting Started
 
@@ -67,7 +67,7 @@ See [PROJECT_RULES.md](PROJECT_RULES.md) for repo-specific constraints. Key poin
 - **ESM only** — no CommonJS
 - **Bun** package manager
 - **Node.js + TypeScript** only — no other runtimes in v1
-- Stubs only — no substantive implementation until architecture and terminology are stabilized
+- The specification in `status-spec` is now stable (Phase 3 complete) — substantive implementation may proceed
 
 ## License
 
