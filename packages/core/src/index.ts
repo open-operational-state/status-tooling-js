@@ -1,10 +1,11 @@
 /**
  * @open-operational-state/core
  *
- * Core model logic, normalization, and manipulation.
+ * Core model logic: normalization, aggregation, and validation.
  *
- * This package is intentionally a stub. Implementation will follow
- * once the core model is defined in status-spec.
+ * Depends only on @open-operational-state/types.
  */
 
-export {};
+export { normalizeSnapshot } from './normalize.js';
+export { worstOf, deriveParentConditionFromChecks, deriveParentConditionFromComponents } from './aggregate.js';
+export { validateSnapshot } from './validate-model.js';
