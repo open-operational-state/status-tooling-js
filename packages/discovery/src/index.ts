@@ -1,10 +1,16 @@
 /**
  * @open-operational-state/discovery
  *
- * Discovery client for locating operational-state resources.
- * Implements link-based, well-known, and DNS bootstrap discovery.
+ * Discovery client — well-known paths, Link header parsing,
+ * discovery document consumption.
  *
- * This package is intentionally a stub.
+ * Depends on @open-operational-state/types.
  */
 
-export {};
+export { parseLinkHeaders } from './link-header.js';
+export type { OperationalStateLink } from './link-header.js';
+
+export { fetchDiscoveryDocument, validateDiscoveryDocument } from './well-known.js';
+
+export { discover } from './discover.js';
+export type { DiscoverOptions, DiscoverResult } from './discover.js';
