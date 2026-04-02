@@ -220,6 +220,29 @@ export interface ValidationResult {
 }
 
 // ---------------------------------------------------------------------------
+// Parse result (used by parser)
+// ---------------------------------------------------------------------------
+
+export interface ParseError {
+    message: string;
+    code: string;
+}
+
+export interface ParseWarning {
+    message: string;
+    code: string;
+}
+
+export interface ParseResult {
+    /** The parsed snapshot, or null if parsing failed completely */
+    snapshot: Snapshot | null;
+    /** Non-fatal errors encountered during parsing */
+    errors: ParseError[];
+    /** Warnings about ambiguous or lossy interpretation */
+    warnings: ParseWarning[];
+}
+
+// ---------------------------------------------------------------------------
 // Discovery document
 // ---------------------------------------------------------------------------
 

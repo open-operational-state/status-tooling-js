@@ -1,25 +1,59 @@
 # @open-operational-state/types
 
-Canonical TypeScript types for the Open Operational State core model.
+Canonical TypeScript interfaces for the [Open Operational State](https://github.com/open-operational-state) core model.
 
-## Purpose
+This package is the shared contract surface for all tooling packages. It contains zero runtime logic — only type declarations, constants, and type guards.
 
-This package defines the TypeScript interfaces and types that represent the core model concepts:
+## Installation
 
-- Subject
-- Condition
-- Timing
-- Evidence
-- Scope
-- Dependencies / Components
-- Provenance
+```bash
+bun add @open-operational-state/types
+```
 
-All other packages in this monorepo depend on `types` for their foundational type definitions.
+## API
 
-## Status
+### Core Interfaces
 
-**Stub** — types will be defined as the architecture and terminology in [status-spec](https://github.com/open-operational-state/status-spec) stabilize.
+| Interface | Description |
+|---|---|
+| `Snapshot` | Root operational-state document |
+| `Subject` | Identity and metadata for the observed service |
+| `Timing` | Observation, reporting, and state-change timestamps |
+| `Evidence` | Supporting data for a condition assessment |
+| `Scope` | Geographic or environmental scope |
+| `CheckEntry` | Flat check (used in `health-response` format) |
+| `ComponentEntry` | Nested component (used in `service-status` format) |
+| `DependencyEntry` | Nested dependency (used in `service-status` format) |
+| `DiscoveryDocument` | `/.well-known/operational-state` document |
+| `ResourceEntry` | Single resource in a discovery document |
+| `ValidationResult` | Validation output with errors and warnings |
+| `ConformanceResult` | Conformance level assessment |
 
-## License
+### Condition Vocabulary
 
-[Apache 2.0](../../LICENSE)
+```js
+import { LIVENESS_CONDITIONS, READINESS_CONDITIONS, HEALTH_CONDITIONS } from '@open-operational-state/types';
+import { isConditionValue, isExtensionValue, severityOf } from '@open-operational-state/types';
+
+isConditionValue( 'operational' );  // true
+isConditionValue( 'x-acme-drain' ); // true (extension values accepted)
+isExtensionValue( 'x-acme-drain' ); // true
+
+severityOf( 'down' );         // 4 (highest)
+severityOf( 'operational' );  // 0 (lowest)
+```
+
+### Profile Helpers
+
+```js
+import { PROFILE_REQUIREMENTS, isProfileId, profileHierarchy } from '@open-operational-state/types';
+
+isProfileId( 'health' );  // true
+isProfileId( 'custom' );  // false
+
+profileHierarchy( 'status' );  // ['liveness', 'readiness', 'health', 'status']
+```
+
+## Dependencies
+
+None. This package has zero external dependencies.
