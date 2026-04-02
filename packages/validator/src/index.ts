@@ -1,10 +1,10 @@
 /**
  * @open-operational-state/validator
  *
- * Conformance validator for operational-state responses.
- * Validates against profiles, serializations, and conformance levels.
- *
- * This package is intentionally a stub.
+ * Conformance validation, fixture execution, and conformance level checking.
  */
 
-export {};
+export { loadFixture, runFixture, runFixtureDir } from './fixture-runner.js';
+export type { Fixture, FixtureResult, FixtureMetadata, FixtureExpected } from './fixture-runner.js';
+
+export { checkConformanceLevel } from './conformance.js';
