@@ -1,10 +1,15 @@
 /**
  * @open-operational-state/emitter
  *
- * Response emitters/generators.
- * Serializes core model instances into wire formats.
+ * Serialization emitters — convert core model Snapshots to wire formats.
  *
- * This package is intentionally a stub.
+ * Depends on @open-operational-state/types and @open-operational-state/core.
  */
 
-export {};
+export { emitHealthResponse } from './health-response.js';
+export type { HealthResponsePayload, EmitHealthResponseOptions } from './health-response.js';
+
+export { emitServiceStatus } from './service-status.js';
+export type { ServiceStatusPayload } from './service-status.js';
+
+export { suggestHttpStatus, suggestHeaders } from './http.js';
