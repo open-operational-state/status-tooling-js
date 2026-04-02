@@ -1,22 +1,60 @@
 # @open-operational-state/core
 
-Core model logic, normalization, and manipulation for the Open Operational State standard.
+Core model logic for [Open Operational State](https://github.com/open-operational-state). Depends only on `@open-operational-state/types`.
 
-## Purpose
+## Installation
 
-This package provides:
+```bash
+bun add @open-operational-state/core
+```
 
-- Core model instance creation and manipulation
-- Normalization of operational-state data
-- Condition evaluation and comparison
-- Snapshot consistency validation
+## API
 
-Depends on `@open-operational-state/types` for type definitions.
+### `normalizeSnapshot( raw )`
 
-## Status
+Coerce a raw JSON object into a typed `Snapshot` with spec defaults applied.
 
-**Stub** — implementation will follow once the core model is defined in [status-spec](https://github.com/open-operational-state/status-spec).
+```js
+import { normalizeSnapshot } from '@open-operational-state/core';
 
-## License
+const snapshot = normalizeSnapshot({
+    condition: 'operational',
+    profiles: ['health'],
+    subject: { id: 'my-service' },
+});
+```
 
-[Apache 2.0](../../LICENSE)
+### `validateSnapshot( snapshot )`
+
+Validate a `Snapshot` against required fields, vocabulary rules, and profile constraints. Returns `{ valid, errors, warnings }`.
+
+```js
+import { validateSnapshot } from '@open-operational-state/core';
+
+const result = validateSnapshot( snapshot );
+if ( !result.valid ) {
+    console.error( result.errors );
+}
+```
+
+### `worstOf( conditions )`
+
+Return the worst (highest severity) condition from an array, using the orderable severity ranking.
+
+```js
+import { worstOf } from '@open-operational-state/core';
+
+worstOf([ 'operational', 'degraded', 'down' ]); // 'down'
+```
+
+### `deriveParentConditionFromChecks( checks )`
+
+Derive a parent condition from flat check entries using worst-of aggregation.
+
+### `deriveParentConditionFromComponents( components )`
+
+Derive a parent condition from nested component entries using worst-of aggregation.
+
+## Dependencies
+
+- `@open-operational-state/types`
