@@ -3,3 +3,4 @@ dist/
 *.tsbuildinfo
 bun.lock
 .DS_Store
+.npmrc

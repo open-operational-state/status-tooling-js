@@ -1,6 +1,8 @@
 {
   "name": "@open-operational-state/discovery",
   "version": "0.1.0",
+  "description": "Discovery client for locating Open Operational State resources",
+  "license": "Apache-2.0",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,6 +15,14 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/open-operational-state/status-tooling.git",
+    "directory": "packages/discovery"
+  },
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
@@ -20,7 +30,7 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@open-operational-state/types": "workspace:*"
+    "@open-operational-state/types": "^0.1.0"
   },
   "devDependencies": {
     "typescript": "^5.8.0"
