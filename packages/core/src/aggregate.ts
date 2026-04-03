@@ -30,12 +30,13 @@ for ( const c of HEALTH_ORDERABLE_CONDITIONS ) {
 /**
  * Returns the worst (highest severity) orderable condition from a list.
  *
- * Categorical and extension values are skipped — they do not participate
- * in worst-of calculations per the spec.
+ * Non-orderable values (categorical and extension) are skipped — they
+ * do not participate in worst-of calculations per the spec.
  *
- * Returns `undefined` if no orderable values are present.
+ * Returns `'unknown'` if no orderable values are present (including
+ * empty arrays).
  */
-export function worstOf( conditions: string[] ): string | undefined {
+export function worstOf( conditions: string[] ): string {
     let worstSeverity = -1;
     let worstCondition: string | undefined;
 
@@ -48,7 +49,7 @@ export function worstOf( conditions: string[] ): string | undefined {
         }
     }
 
-    return worstCondition;
+    return worstCondition ?? 'unknown';
 }
 
 /**
@@ -59,7 +60,7 @@ export function worstOf( conditions: string[] ): string | undefined {
  */
 export function deriveParentConditionFromChecks(
     checks: Record<string, CheckEntry>,
-): string | undefined {
+): string {
     const conditions = Object.values( checks ).map( ( c ) => c.condition );
     return worstOf( conditions );
 }
@@ -71,7 +72,7 @@ export function deriveParentConditionFromChecks(
  */
 export function deriveParentConditionFromComponents(
     components: ComponentEntry[],
-): string | undefined {
+): string {
     const conditions = components.map( ( c ) => c.condition );
     return worstOf( conditions );
 }

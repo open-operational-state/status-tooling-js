@@ -33,25 +33,24 @@ bun add @open-operational-state/types
 
 ```js
 import { LIVENESS_CONDITIONS, READINESS_CONDITIONS, HEALTH_CONDITIONS } from '@open-operational-state/types';
-import { isConditionValue, isExtensionValue, severityOf } from '@open-operational-state/types';
+import { isHealthCondition, isExtensionCondition, conditionSeverity } from '@open-operational-state/types';
 
-isConditionValue( 'operational' );  // true
-isConditionValue( 'x-acme-drain' ); // true (extension values accepted)
-isExtensionValue( 'x-acme-drain' ); // true
+isHealthCondition( 'operational' );       // true
+isExtensionCondition( 'x-acme-drain' );   // true
 
-severityOf( 'down' );         // 4 (highest)
-severityOf( 'operational' );  // 0 (lowest)
+conditionSeverity( 'operational' );  // 1 (lowest orderable)
+conditionSeverity( 'down' );         // 5 (highest orderable)
 ```
 
 ### Profile Helpers
 
 ```js
-import { PROFILE_REQUIREMENTS, isProfileId, profileHierarchy } from '@open-operational-state/types';
+import { PROFILE_REQUIREMENTS, isProfileId, satisfiedProfiles } from '@open-operational-state/types';
 
 isProfileId( 'health' );  // true
 isProfileId( 'custom' );  // false
 
-profileHierarchy( 'status' );  // ['liveness', 'readiness', 'health', 'status']
+satisfiedProfiles( 'status' );  // ['liveness', 'readiness', 'health', 'status']
 ```
 
 ## Dependencies

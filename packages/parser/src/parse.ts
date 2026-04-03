@@ -63,9 +63,9 @@ export function parse( input: ParseInput ): Snapshot {
     const format = detectFormat( input.contentType, input.body );
 
     switch ( format ) {
+        // service-status is a superset of health-response; normalizeSnapshot
+        // handles both shapes, so a single parser path is intentional.
         case 'native-health-response':
-            return parseHealthResponse( input.body );
-
         case 'native-service-status':
             return parseHealthResponse( input.body );
 

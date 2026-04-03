@@ -7,7 +7,7 @@
  */
 
 export { emitHealthResponse } from './health-response.js';
-export type { HealthResponsePayload, EmitHealthResponseOptions } from './health-response.js';
+export type { HealthResponsePayload } from './health-response.js';
 
 export { emitServiceStatus } from './service-status.js';
 export type { ServiceStatusPayload } from './service-status.js';

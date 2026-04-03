@@ -224,10 +224,14 @@ describe( 'round-trip: adapter → emit → re-parse', () => {
             expect( roundTripped.subject.id ).toBe( adapted.subject.id );
             expect( roundTripped.provenance ).toBe( adapted.provenance );
 
-            // Must still validate
+            // Must still validate — round-trip must not INTRODUCE new errors
+            const adaptedValidation = validateSnapshot( adapted );
             const validation = validateSnapshot( roundTripped );
-            // Adapter output may not fully satisfy all profile requirements,
-            // but the round-trip must not INTRODUCE new errors
+            if ( adaptedValidation.valid ) {
+                expect( validation.valid ).toBe( true );
+            } else {
+                expect( validation.errors.length ).toBeLessThanOrEqual( adaptedValidation.errors.length );
+            }
         } );
     }
 } );

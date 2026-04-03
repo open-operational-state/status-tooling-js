@@ -21,6 +21,7 @@ describe( 'validateSnapshot', () => {
             condition: 'operational',
             profiles: [ 'health' ],
             subject: { id: 'svc-1' },
+            timing: { observed: '2026-04-02T19:30:00Z' },
         } );
         expect( result.valid ).toBe( true );
         expect( result.errors.length ).toBe( 0 );
@@ -93,6 +94,7 @@ describe( 'validateSnapshot', () => {
                 condition,
                 profiles: [ 'health' ],
                 subject: { id: 'svc-1' },
+                timing: { observed: '2026-04-02T19:30:00Z' },
             } );
             expect( result.valid ).toBe( true );
         }
@@ -104,6 +106,7 @@ describe( 'validateSnapshot', () => {
                 condition,
                 profiles: [ 'health' ],
                 subject: { id: 'svc-1' },
+                timing: { observed: '2026-04-02T19:30:00Z' },
             } );
             expect( result.valid ).toBe( true );
         }
@@ -114,6 +117,7 @@ describe( 'validateSnapshot', () => {
             condition: 'x-acme-draining',
             profiles: [ 'health' ],
             subject: { id: 'svc-1' },
+            timing: { observed: '2026-04-02T19:30:00Z' },
         } );
         expect( result.valid ).toBe( true );
     } );
@@ -162,6 +166,7 @@ describe( 'validateSnapshot', () => {
             condition: 'degraded',
             profiles: [ 'health' ],
             subject: { id: 'svc-1' },
+            timing: { observed: '2026-04-02T19:30:00Z' },
             checks: {
                 db: { condition: 'operational', role: 'dependency' },
             },
@@ -177,6 +182,7 @@ describe( 'validateSnapshot', () => {
                 condition: 'operational',
                 profiles: [ 'health' ],
                 subject: { id: 'svc-1' },
+                timing: { observed: '2026-04-02T19:30:00Z' },
                 provenance,
             } );
             expect( result.valid ).toBe( true );

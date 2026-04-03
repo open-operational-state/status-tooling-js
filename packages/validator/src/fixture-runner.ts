@@ -101,20 +101,21 @@ export function runFixture( fixture: Fixture ): FixtureResult {
         }
     }
 
-    // ── Check expected error message (negative fixtures) ───────────────
+    // ── Check expected error message or code (negative fixtures) ────────
     if ( fixture.expected.error && fixture.expected.valid === false ) {
+        const expectedError = fixture.expected.error;
         const hasMatchingError = validation.errors.some(
-            ( e ) => e.message === fixture.expected.error,
+            ( e ) => e.message === expectedError || e.code === expectedError,
         );
         if ( !hasMatchingError ) {
-            // Check for partial match
+            // Check for partial match on message
             const hasPartialMatch = validation.errors.some(
-                ( e ) => e.message.includes( fixture.expected.error!.split( ':' )[0] ),
+                ( e ) => e.message.includes( expectedError.split( ':' )[0] ),
             );
             if ( !hasPartialMatch ) {
                 passed = false;
                 diagnostics.push(
-                    `Expected error containing '${fixture.expected.error}', got: ${JSON.stringify( validation.errors.map( ( e ) => e.message ) )}`,
+                    `Expected error containing '${expectedError}', got: ${JSON.stringify( validation.errors.map( ( e ) => `${e.code}: ${e.message}` ) )}`,
                 );
             }
         }

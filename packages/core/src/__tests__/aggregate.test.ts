@@ -33,8 +33,8 @@ describe( 'worstOf', () => {
         expect( worstOf( [ 'partial-outage', 'major-outage' ] ) ).toBe( 'major-outage' );
     } );
 
-    it( 'treats unrecognized values as maximum severity', () => {
-        expect( worstOf( [ 'operational', 'x-custom' ] ) ).toBe( 'x-custom' );
+    it( 'skips non-orderable values and returns best orderable', () => {
+        expect( worstOf( [ 'operational', 'x-custom' ] ) ).toBe( 'operational' );
     } );
 
     it( 'handles liveness conditions', () => {

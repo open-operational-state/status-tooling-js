@@ -31,14 +31,6 @@ export interface HealthResponsePayload {
     links?: Record<string, string>;
 }
 
-// ---------------------------------------------------------------------------
-// Options
-// ---------------------------------------------------------------------------
-
-export interface EmitHealthResponseOptions {
-    /** Include optional fields even if empty */
-    includeOptional?: boolean;
-}
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -49,7 +41,6 @@ export interface EmitHealthResponseOptions {
  */
 export function emitHealthResponse(
     snapshot: Snapshot,
-    options?: EmitHealthResponseOptions,
 ): HealthResponsePayload {
     const payload: HealthResponsePayload = {
         condition: snapshot.condition,
