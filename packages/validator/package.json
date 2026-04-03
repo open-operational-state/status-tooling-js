@@ -1,6 +1,6 @@
 {
   "name": "@open-operational-state/validator",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Conformance validation, fixture runner, and CLI for Open Operational State",
   "license": "Apache-2.0",
   "type": "module",
@@ -33,9 +33,9 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@open-operational-state/types": "^0.1.0",
-    "@open-operational-state/core": "^0.1.0",
-    "@open-operational-state/parser": "^0.1.0"
+    "@open-operational-state/types": "^0.1.1",
+    "@open-operational-state/core": "^0.1.1",
+    "@open-operational-state/parser": "^0.1.1"
   },
   "devDependencies": {
     "typescript": "^5.8.0"

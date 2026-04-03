@@ -1,6 +1,6 @@
 {
   "name": "@open-operational-state/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Core model logic: normalization, validation, and aggregation for Open Operational State",
   "license": "Apache-2.0",
   "type": "module",
@@ -30,7 +30,7 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@open-operational-state/types": "^0.1.0"
+    "@open-operational-state/types": "^0.1.1"
   },
   "devDependencies": {
     "typescript": "^5.8.0"

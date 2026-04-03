@@ -1,6 +1,6 @@
 {
   "name": "@open-operational-state/emitter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Serialization emitters for Open Operational State wire formats",
   "license": "Apache-2.0",
   "type": "module",
@@ -30,11 +30,11 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@open-operational-state/types": "^0.1.0",
-    "@open-operational-state/core": "^0.1.0"
+    "@open-operational-state/types": "^0.1.1",
+    "@open-operational-state/core": "^0.1.1"
   },
   "devDependencies": {
-    "@open-operational-state/parser": "^0.1.0",
+    "@open-operational-state/parser": "^0.1.1",
     "typescript": "^5.8.0"
   }
 }
