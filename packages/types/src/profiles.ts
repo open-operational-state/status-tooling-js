@@ -63,7 +63,7 @@ export const PROFILE_REQUIREMENTS: Record<ProfileId, ProfileRequirements> = {
     health: {
         subject: 'MUST',
         condition: 'MUST',
-        timing: 'MUST',
+        timing: 'SHOULD',
         evidence: 'SHOULD',
         components: 'MAY',
         dependencies: 'MAY',

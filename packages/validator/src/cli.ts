@@ -137,7 +137,11 @@ async function cmdProbe( url: string ): Promise<void> {
             httpStatus: response.status,
             contentType,
             snapshot,
-            validation: { valid: validation.valid, errorCount: validation.errors.length },
+            validation: {
+                valid: validation.valid,
+                errorCount: validation.errors.length,
+                warningCount: validation.warnings.length,
+            },
             conformance: { level: conformance.level },
         } );
     } catch ( err ) {

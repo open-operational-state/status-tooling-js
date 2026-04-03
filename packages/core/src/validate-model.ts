@@ -224,6 +224,12 @@ function validateProfileRequirements(
             message: `Profile '${profileId}' requires timing`,
             code: 'PROFILE_MISSING_TIMING',
         } );
+    } else if ( reqs.timing === 'SHOULD' && !snapshot.timing ) {
+        warnings.push( {
+            path: 'timing',
+            message: `Profile '${profileId}' recommends timing`,
+            code: 'PROFILE_RECOMMEND_TIMING',
+        } );
     }
 
     // Evidence
