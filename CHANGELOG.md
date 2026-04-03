@@ -4,7 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+
+## [0.1.1] — 2026-04-03
+
+### Changed
+- **Health profile timing**: requirement level relaxed from `MUST` to `SHOULD`. Missing timing now produces a warning instead of a validation error. Real-world health endpoints (which rarely include timing) now validate as valid.
+- **CLI probe output**: now includes `warningCount` alongside `errorCount`, so warnings are visible without appearing as failures.
+
+### Fixed
+- Release script dry-run no longer mutates `package.json` files — originals are restored after the run.
+
+### Added
+- `examples/README.md` with real-world usage patterns (Express, Hono, CLI, parser, discovery, aggregation).
+- `scripts/release.js` for coordinated version bumps, builds, tests, and publishing across all packages.
+- Examples section linked from root README.
+
+## [0.1.0] — 2026-04-02
 
 ### Added
 
@@ -32,6 +47,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **discovery**: RFC 8288 Link header parser for `rel="operational-state"`
 - **discovery**: Well-known path (`/.well-known/operational-state`) fetch and validation
 - **discovery**: Unified discovery flow with Link header → well-known fallback
-- All packages bumped to 0.1.0 with `"type": "module"` (ESM-only)
+- All packages published to npm under `@open-operational-state` scope
 - Developer documentation (README) for all 6 packages
-- Root README overhaul with CLI docs, format table, dependency graph
+- Root README with CLI docs, format table, dependency graph
+
