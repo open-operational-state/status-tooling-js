@@ -1,4 +1,4 @@
-# Status Tooling
+# Status Tooling (JavaScript)
 
 Vendor-neutral reference tooling for the [Open Operational State](https://github.com/open-operational-state) standard.
 
@@ -8,8 +8,31 @@ Vendor-neutral reference tooling for the [Open Operational State](https://github
 ## Install
 
 ```bash
-npm install @open-operational-state/core @open-operational-state/emitter
+npm install @open-operational-state/oos
 ```
+
+Probe any endpoint:
+
+```bash
+npx @open-operational-state/oos probe https://api.example.com/health
+```
+
+Or after local install:
+
+```bash
+npx oos probe https://api.example.com/health
+```
+
+## Programmatic Usage
+
+```js
+import { probe } from '@open-operational-state/oos';
+
+const result = await probe( 'https://api.example.com/health' );
+console.log( result.snapshot.condition ); // 'operational'
+```
+
+Or use the lower-level packages directly:
 
 ```js
 import { normalizeSnapshot } from '@open-operational-state/core';
@@ -27,26 +50,24 @@ app.get( '/health', ( req, res ) => {
 } );
 ```
 
-Or parse any existing health endpoint into the common model:
-
-```bash
-npx @open-operational-state/validator probe https://your-api.com/health
-```
-
 ## Overview
 
-This monorepo is the source for the `@open-operational-state` npm packages — a complete toolkit for parsing, emitting, validating, and discovering operational-state resources. All packages are published to npm, written in TypeScript, and use ESM.
+This monorepo is the JavaScript implementation of the `@open-operational-state` npm packages — a complete toolkit for probing, parsing, emitting, validating, and discovering operational-state resources. All packages are published to npm, written in TypeScript, and use ESM.
+
+Future implementations in other languages (Go, PHP, etc.) will live in separate repos under the same organization.
 
 ## Packages
 
 | Package | Purpose | Version |
 |---|---|---|
-| [`@open-operational-state/types`](packages/types/) | Canonical TypeScript types for the core model | 0.1.1 |
-| [`@open-operational-state/core`](packages/core/) | Core model logic, normalization, validation | 0.1.1 |
-| [`@open-operational-state/parser`](packages/parser/) | Response parsers and format adapters | 0.1.1 |
-| [`@open-operational-state/emitter`](packages/emitter/) | Wire format emitters | 0.1.1 |
-| [`@open-operational-state/validator`](packages/validator/) | Conformance validation and `oos` CLI | 0.1.1 |
-| [`@open-operational-state/discovery`](packages/discovery/) | Discovery client (Link headers, well-known) | 0.1.1 |
+| [`@open-operational-state/oos`](packages/oos/) | Developer-facing package and CLI | 0.2.0 |
+| [`@open-operational-state/probe`](packages/probe/) | Endpoint probing — fetch, detect, parse, normalize | 0.2.0 |
+| [`@open-operational-state/types`](packages/types/) | Canonical TypeScript types for the core model | 0.2.0 |
+| [`@open-operational-state/core`](packages/core/) | Core model logic, normalization, validation | 0.2.0 |
+| [`@open-operational-state/parser`](packages/parser/) | Response parsers and format adapters | 0.2.0 |
+| [`@open-operational-state/emitter`](packages/emitter/) | Wire format emitters | 0.2.0 |
+| [`@open-operational-state/validator`](packages/validator/) | Conformance validation and fixture runner | 0.2.0 |
+| [`@open-operational-state/discovery`](packages/discovery/) | Discovery client (Link headers, well-known) | 0.2.0 |
 
 ## Development
 
@@ -61,24 +82,24 @@ bun run build
 bun run test
 
 # Probe a live endpoint
-node packages/validator/dist/cli.js probe https://api.example.com/health
+node packages/oos/dist/cli.js probe https://api.example.com/health
 
 # Run conformance fixtures
-node packages/validator/dist/cli.js fixtures ../status-conformance/fixtures/core --format=table
+node packages/oos/dist/cli.js fixtures ../status-conformance/fixtures/core --format=table
 ```
 
 ## CLI
 
-The `oos` CLI is included in the validator package:
+The `oos` CLI is included in the `@open-operational-state/oos` package:
 
 ```bash
-oos validate <file>       # Validate a JSON file against conformance levels
-oos probe <url>           # Fetch a URL, auto-detect format, parse to core model
-oos fixtures <dir>        # Run all conformance fixtures in a directory
-oos inspect <file>        # Parse a JSON file, pretty-print core model
+oos probe <url>          # Fetch a URL, auto-detect format, parse to core model
+oos validate <file>      # Validate a JSON file against conformance levels
+oos fixtures <dir>       # Run all conformance fixtures in a directory
+oos inspect <file>       # Parse a JSON file, pretty-print core model
 ```
 
-See the [validator README](packages/validator/README.md) for full CLI documentation.
+See the [oos README](packages/oos/README.md) for full CLI documentation.
 
 ## Examples
 
@@ -104,22 +125,23 @@ This tooling implements the six-layer architecture defined in the [status-spec](
 - **`core`** — normalization and manipulation of core model instances
 - **`parser`** — deserialization from wire formats to core model (Layers 3–4)
 - **`emitter`** — serialization from core model to wire formats (Layer 3)
-- **`validator`** — conformance validation against profiles and serializations (cross-cutting)
 - **`discovery`** — discovery client for locating operational-state resources (Layer 5)
+- **`probe`** — end-to-end endpoint probing (orchestrates parser, core, discovery)
+- **`validator`** — conformance validation against profiles and serializations (cross-cutting)
+- **`oos`** — developer-facing umbrella package and CLI entrypoint
 
 ## Dependency Graph
 
 ```
-types ← core ← parser
-              ← emitter
-              ← validator ← parser
-discovery ← types (only)
+types         ← (no deps)
+core          ← types
+parser        ← core, types
+emitter       ← core, types
+discovery     ← types
+probe         ← types, core, parser, discovery
+validator     ← types, core, parser, probe
+oos           ← probe, validator
 ```
-
-- `core` depends **only** on `types`
-- `parser` and `emitter` depend on `core` + `types`
-- `validator` depends on `types` + `core` + `parser`
-- `discovery` depends **only** on `types`
 
 ## Testing
 

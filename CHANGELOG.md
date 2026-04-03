@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
+## [0.2.0] — 2026-04-03
+
+### Added
+- **probe**: New package (`@open-operational-state/probe`) — programmatic endpoint probing with `probe()` API. Fetch, auto-detect, parse, normalize in a single call. Supports discovery follow and cancellation via AbortSignal.
+- **oos**: New package (`@open-operational-state/oos`) — the developer-facing umbrella package. Owns the `oos` binary. Install this one package for both the CLI and programmatic API.
+
+### Changed
+- **Repo renamed** from `status-tooling` to `status-tooling-js` — preparing for future implementations in other languages (Go, PHP, etc.). npm package names unchanged.
+- **CLI ownership**: The `oos` binary is now owned by `@open-operational-state/oos` instead of `@open-operational-state/validator`. Install `@open-operational-state/oos` for CLI access.
+- **validator**: CLI probe command now delegates to `probe()` from the probe package — single implementation, no drift.
+- **validator**: Exports `runCli()` for delegation from the oos package.
+
+### Breaking
+- **validator**: Removed `bin` field. Users who installed `@open-operational-state/validator` for the `oos` binary should switch to `@open-operational-state/oos`.
+
 ## [0.1.1] — 2026-04-03
 
 ### Changed
@@ -50,4 +65,3 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - All packages published to npm under `@open-operational-state` scope
 - Developer documentation (README) for all 6 packages
 - Root README with CLI docs, format table, dependency graph
-

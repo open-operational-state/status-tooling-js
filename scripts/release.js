@@ -30,8 +30,10 @@ const PACKAGES = [
     'core',
     'parser',
     'emitter',
-    'validator',
     'discovery',
+    'validator',
+    'probe',
+    'oos',
 ];
 
 const SCOPE = '@open-operational-state';
