@@ -1,7 +1,7 @@
 {
-  "name": "@open-operational-state/emitter",
+  "name": "@open-operational-state/probe",
   "version": "0.2.0",
-  "description": "Serialization emitters for Open Operational State wire formats",
+  "description": "Probe any operational-state endpoint — fetch, detect, parse, normalize",
   "license": "Apache-2.0",
   "type": "module",
   "main": "dist/index.js",
@@ -21,7 +21,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/open-operational-state/status-tooling-js.git",
-    "directory": "packages/emitter"
+    "directory": "packages/probe"
   },
   "scripts": {
     "build": "tsc",
@@ -31,10 +31,11 @@
   },
   "dependencies": {
     "@open-operational-state/types": "^0.2.0",
-    "@open-operational-state/core": "^0.2.0"
+    "@open-operational-state/core": "^0.2.0",
+    "@open-operational-state/parser": "^0.2.0",
+    "@open-operational-state/discovery": "^0.2.0"
   },
   "devDependencies": {
-    "@open-operational-state/parser": "^0.2.0",
     "typescript": "^5.8.0"
   }
 }
