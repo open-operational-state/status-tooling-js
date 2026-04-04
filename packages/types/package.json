@@ -1,6 +1,6 @@
 {
   "name": "@open-operational-state/types",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Canonical TypeScript interfaces for the Open Operational State core model",
   "license": "Apache-2.0",
   "type": "module",
