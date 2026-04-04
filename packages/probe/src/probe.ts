@@ -32,6 +32,12 @@ export interface ProbeResult {
     contentType: string | null;
     /** True if the connection itself failed (DNS, timeout, etc.). */
     connectionError: boolean;
+    /** Response headers, or null if connection failed. */
+    headers: Record<string, string> | null;
+    /** Round-trip duration in milliseconds (fetch start → response body read). */
+    durationMs: number;
+    /** Raw response body text, or null if connection failed. */
+    rawBody: string | null;
     /** The parsed and normalized Snapshot. */
     snapshot: Snapshot;
     /** Core-model validation result. */
@@ -82,6 +88,7 @@ export async function probe( url: string, options?: ProbeOptions ): Promise<Prob
     }
 
     // ── Fetch ──────────────────────────────────────────────────────────
+    const startTime = Date.now();
     let response: Response;
     try {
         const fetchOptions: RequestInit = {};
@@ -90,6 +97,8 @@ export async function probe( url: string, options?: ProbeOptions ): Promise<Prob
 
         response = await fetch( probeUrl, fetchOptions );
     } catch ( err: unknown ) {
+        const durationMs = Date.now() - startTime;
+
         // Re-throw AbortError so callers can distinguish cancellation
         if ( err instanceof DOMException && err.name === 'AbortError' ) {
             throw err;
@@ -109,6 +118,9 @@ export async function probe( url: string, options?: ProbeOptions ): Promise<Prob
             httpStatus: null,
             contentType: null,
             connectionError: true,
+            headers: null,
+            durationMs,
+            rawBody: null,
             snapshot,
             validation,
             discovery: discoveryResult,
@@ -144,11 +156,16 @@ export async function probe( url: string, options?: ProbeOptions ): Promise<Prob
     const snapshot = normalizeSnapshot( parsed as unknown as Record<string, unknown> );
     const validation = validateSnapshot( snapshot );
 
+    const durationMs = Date.now() - startTime;
+
     return {
         url: probeUrl,
         httpStatus: response.status,
         contentType,
         connectionError: false,
+        headers,
+        durationMs,
+        rawBody: rawText,
         snapshot,
         validation,
         discovery: discoveryResult,

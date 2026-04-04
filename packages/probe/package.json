@@ -1,6 +1,6 @@
 {
   "name": "@open-operational-state/probe",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Probe any operational-state endpoint — fetch, detect, parse, normalize",
   "license": "Apache-2.0",
   "type": "module",

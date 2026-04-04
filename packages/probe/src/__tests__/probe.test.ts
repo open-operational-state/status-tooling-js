@@ -103,4 +103,68 @@ describe( 'probe', () => {
         await expect( probe( 'https://api.example.com/health', { signal: controller.signal } ) )
             .rejects.toThrow( 'The operation was aborted.' );
     } );
+
+    // ── New fields: headers, durationMs, rawBody ──────────────────────
+
+    it( 'exposes response headers on success', async () => {
+        globalThis.fetch = async () => new Response( JSON.stringify( { status: 'pass' } ), {
+            status: 200,
+            headers: {
+                'content-type': 'application/json',
+                'x-request-id': 'abc-123',
+                'cf-ray': '12345-ATL',
+            },
+        } );
+
+        const result = await probe( 'https://api.example.com/health' );
+
+        expect( result.headers ).toBeDefined();
+        expect( result.headers!['x-request-id'] ).toBe( 'abc-123' );
+        expect( result.headers!['cf-ray'] ).toBe( '12345-ATL' );
+        expect( result.headers!['content-type'] ).toContain( 'application/json' );
+    } );
+
+    it( 'returns null headers on connection error', async () => {
+        globalThis.fetch = async () => { throw new Error( 'ECONNREFUSED' ); };
+
+        const result = await probe( 'https://unreachable.example.com' );
+
+        expect( result.headers ).toBeNull();
+    } );
+
+    it( 'returns durationMs as a non-negative number on success', async () => {
+        globalThis.fetch = async () => mockFetchResponse( { status: 'pass' } );
+
+        const result = await probe( 'https://api.example.com/health' );
+
+        expect( typeof result.durationMs ).toBe( 'number' );
+        expect( result.durationMs ).toBeGreaterThanOrEqual( 0 );
+    } );
+
+    it( 'returns durationMs on connection error', async () => {
+        globalThis.fetch = async () => { throw new Error( 'ECONNREFUSED' ); };
+
+        const result = await probe( 'https://unreachable.example.com' );
+
+        expect( typeof result.durationMs ).toBe( 'number' );
+        expect( result.durationMs ).toBeGreaterThanOrEqual( 0 );
+    } );
+
+    it( 'exposes rawBody matching the response text', async () => {
+        const body = { status: 'pass', output: 'all clear' };
+
+        globalThis.fetch = async () => mockFetchResponse( body );
+
+        const result = await probe( 'https://api.example.com/health' );
+
+        expect( result.rawBody ).toBe( JSON.stringify( body ) );
+    } );
+
+    it( 'returns null rawBody on connection error', async () => {
+        globalThis.fetch = async () => { throw new Error( 'ECONNREFUSED' ); };
+
+        const result = await probe( 'https://unreachable.example.com' );
+
+        expect( result.rawBody ).toBeNull();
+    } );
 } );
