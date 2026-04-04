@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
-## [0.2.0] — 2026-04-03
+## [0.2.0] — 2026-04-04
 
 ### Added
 - **probe**: New package (`@open-operational-state/probe`) — programmatic endpoint probing with `probe()` API. Fetch, auto-detect, parse, normalize in a single call. Supports discovery follow and cancellation via AbortSignal.
@@ -16,6 +16,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **CLI ownership**: The `oos` binary is now owned by `@open-operational-state/oos` instead of `@open-operational-state/validator`. Install `@open-operational-state/oos` for CLI access.
 - **validator**: CLI probe command now delegates to `probe()` from the probe package — single implementation, no drift.
 - **validator**: Exports `runCli()` for delegation from the oos package.
+- **validator**: Removed unused direct dependency on `@open-operational-state/parser` (transitive via probe).
+- **release script**: PACKAGES array reordered to be topologically sorted by internal dependencies.
+
+### Fixed
+- **probe**: Relative Link header URIs from discovery are now resolved against the base URL.
+- **probe**: Parse/normalize errors are no longer misclassified as connection failures — `connectionError` is now strictly reserved for fetch-layer failures (DNS, timeout, refused).
+- **probe**: AbortSignal cancellation re-throws `AbortError` instead of returning `connectionError: true`.
+- **validator**: `JSON.parse` errors in `validate` and `inspect` commands now produce user-friendly error messages instead of unhandled exceptions.
+- **validator**: Removed stale shebang from `cli.ts` (no longer a direct entrypoint).
+
+### Removed
+- **probe**: Removed `detectedFormat` field from `ProbeResult` (was always `null`). Will be reintroduced when the parser exposes detected format metadata.
 
 ### Breaking
 - **validator**: Removed `bin` field. Users who installed `@open-operational-state/validator` for the `oos` binary should switch to `@open-operational-state/oos`.
