@@ -22,3 +22,13 @@ export type {
     ValidationWarning,
     DiscoveryDocument,
 } from '@open-operational-state/types';
+
+// ── Condition vocabulary (severity ordering, type guards) ─────────────
+export {
+    conditionSeverity,
+    isOrderableCondition,
+    HEALTH_ORDERABLE_CONDITIONS,
+    HEALTH_CATEGORICAL_CONDITIONS,
+    LIVENESS_CONDITIONS,
+    READINESS_CONDITIONS,
+} from '@open-operational-state/types';
