@@ -61,6 +61,7 @@
     "test": "bun test"
   },
   "dependencies": {
+    "@open-operational-state/core": "^0.2.2",
     "@open-operational-state/emitter": "^0.2.2",
     "@open-operational-state/probe": "^0.2.2",
     "@open-operational-state/types": "^0.2.2",

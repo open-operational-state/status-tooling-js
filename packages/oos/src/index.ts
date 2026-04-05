@@ -19,6 +19,23 @@ export type {
     AuthPredicate,
 } from './serve.js';
 
+// ── Check registry (dynamic health checks) ───────────────────────────
+export { createCheckRegistry } from './check-registry.js';
+export type {
+    CheckRegistry,
+    CheckRegistryResult,
+    CheckConfig,
+    CheckResult,
+} from './check-registry.js';
+
+// ── Lifecycle (startup / shutdown) ────────────────────────────────────
+export { createLifecycle } from './lifecycle.js';
+export type {
+    Lifecycle,
+    LifecycleConfig,
+    LifecyclePhase,
+} from './lifecycle.js';
+
 // ── Exposure filtering ────────────────────────────────────────────────
 export { filterByExposure } from './exposure.js';
 
