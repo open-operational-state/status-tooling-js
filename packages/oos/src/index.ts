@@ -4,9 +4,43 @@
  * The developer-facing package for Open Operational State.
  *
  * Curated re-exports — small, opinionated, stable.
+ *   - serve(): producer API — serve your own operational state
+ *   - probe(): consumer API — probe someone else's operational state
  */
 
-// ── Probe (primary API) ───────────────────────────────────────────────
+// ── Serve (producer API) ──────────────────────────────────────────────
+export { serve } from './serve.js';
+export type {
+    OosHandler,
+    OosRequest,
+    HandlerResult,
+    ServeConfig,
+    ConditionProvider,
+    AuthPredicate,
+} from './serve.js';
+
+// ── Exposure filtering ────────────────────────────────────────────────
+export { filterByExposure } from './exposure.js';
+
+// ── Named constants ───────────────────────────────────────────────────
+export {
+    Condition,
+    Profile,
+    Exposure,
+    Serialization,
+    ProvenanceType,
+    Role,
+} from './constants.js';
+export type {
+    ConditionValue,
+    ProfileValue,
+    ExposureValue,
+    SerializationValue,
+    ProvenanceTypeValue,
+    RoleValue,
+} from './constants.js';
+
+// ── Probe (consumer API) ──────────────────────────────────────────────
 export { probe } from '@open-operational-state/probe';
 export type { ProbeResult, ProbeOptions } from '@open-operational-state/probe';
 

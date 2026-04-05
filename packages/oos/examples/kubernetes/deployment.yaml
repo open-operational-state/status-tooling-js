@@ -1,0 +1,63 @@
+# Kubernetes Deployment with OOS Health Probes
+#
+# OOS health endpoints produce spec-correct HTTP status codes:
+#   200 — operational, degraded, partial-outage, major-outage,
+#          initializing, alive, ready, unknown
+#   503 — down, unreachable, not-ready, maintenance
+#
+# Kubernetes probes only need the HTTP status code — no parsing required.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-api
+  labels:
+    app: my-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-api
+  template:
+    metadata:
+      labels:
+        app: my-api
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: my-api
+          image: my-api:latest
+          ports:
+            - containerPort: 3000
+
+          # Liveness — is the process alive?
+          # OOS returns 200 for operational/degraded, 503 for down/maintenance
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          # Readiness — can this pod accept traffic?
+          # OOS returns 503 during not-ready/maintenance
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 1
+
+          # Startup — has the process finished starting?
+          # failureThreshold × periodSeconds = maximum startup time
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            failureThreshold: 30
+            periodSeconds: 2
+            timeoutSeconds: 3

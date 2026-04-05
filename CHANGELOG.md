@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **oos**: `serve()` handler factory — producer-side API that creates spec-conformant `application/health+json` responses. Accepts static or async condition providers with authentication-based exposure tier switching.
+- **oos**: Named constants (`Condition`, `Profile`, `Exposure`, `Serialization`, `ProvenanceType`, `Role`) — eliminate magic strings, provide autocomplete and typo protection.
+- **oos**: `filterByExposure()` — security-tier filtering with 4 levels: condition-only (secure default), condition-metadata, component-level, full-diagnostic. Applied before serialization.
+- **oos**: 7 framework adapters via subpath exports: `oos/web` (Next.js, Bun, Deno, Workers, Remix, SvelteKit, Astro), `oos/express`, `oos/fastify`, `oos/hono`, `oos/h3` (Nuxt/Nitro), `oos/koa`, `oos/node-http`.
+- **oos**: 38 new tests covering constants, exposure filtering, and serve handler behaviour.
+- **oos**: Runnable examples for Express, Bun/Web Standard, Next.js App Router, and Kubernetes probe integration.
 - **probe**: `headers` field on `ProbeResult` — response headers as `Record<string, string>`, or `null` on connection failure.
 - **probe**: `durationMs` field on `ProbeResult` — round-trip timing (fetch start → response body read).
 - **probe**: `rawBody` field on `ProbeResult` — unparsed response text for debugging, or `null` on connection failure.

@@ -1,7 +1,7 @@
 {
   "name": "@open-operational-state/oos",
-  "version": "0.2.2",
-  "description": "Open Operational State — developer-facing package and CLI",
+  "version": "0.3.0",
+  "description": "Open Operational State — serve and probe operational state endpoints",
   "license": "Apache-2.0",
   "type": "module",
   "main": "dist/index.js",
@@ -10,6 +10,34 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./web": {
+      "types": "./dist/adapters/web.d.ts",
+      "import": "./dist/adapters/web.js"
+    },
+    "./express": {
+      "types": "./dist/adapters/express.d.ts",
+      "import": "./dist/adapters/express.js"
+    },
+    "./fastify": {
+      "types": "./dist/adapters/fastify.d.ts",
+      "import": "./dist/adapters/fastify.js"
+    },
+    "./hono": {
+      "types": "./dist/adapters/hono.d.ts",
+      "import": "./dist/adapters/hono.js"
+    },
+    "./h3": {
+      "types": "./dist/adapters/h3.d.ts",
+      "import": "./dist/adapters/h3.js"
+    },
+    "./koa": {
+      "types": "./dist/adapters/koa.d.ts",
+      "import": "./dist/adapters/koa.js"
+    },
+    "./node-http": {
+      "types": "./dist/adapters/node-http.d.ts",
+      "import": "./dist/adapters/node-http.js"
     }
   },
   "bin": {
@@ -30,14 +58,29 @@
     "build": "tsc",
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
-    "test": "echo 'No tests — thin entrypoint'"
+    "test": "bun test"
   },
   "dependencies": {
+    "@open-operational-state/emitter": "^0.2.2",
     "@open-operational-state/probe": "^0.2.2",
     "@open-operational-state/types": "^0.2.2",
     "@open-operational-state/validator": "^0.2.2"
   },
   "devDependencies": {
     "typescript": "^5.8.0"
+  },
+  "peerDependencies": {
+    "express": "^4.0.0 || ^5.0.0",
+    "fastify": "^4.0.0 || ^5.0.0",
+    "hono": "^4.0.0",
+    "h3": "^1.0.0",
+    "koa": "^2.0.0"
+  },
+  "peerDependenciesMeta": {
+    "express": { "optional": true },
+    "fastify": { "optional": true },
+    "hono": { "optional": true },
+    "h3": { "optional": true },
+    "koa": { "optional": true }
   }
 }
