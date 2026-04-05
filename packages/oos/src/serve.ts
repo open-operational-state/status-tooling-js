@@ -202,14 +202,12 @@ export function serve( config: ServeConfig ): OosHandler {
 
             // Emit hooks
             if ( hooks ) {
-                const now2 = new Date().toISOString();
-
                 // Condition transition detection
                 if ( lastCondition !== null && lastCondition !== condition ) {
                     hooks.emit( 'conditionChanged', {
                         previous: lastCondition,
                         current: condition,
-                        timestamp: now2,
+                        timestamp: now,
                     } );
                 }
                 lastCondition = condition;
@@ -218,7 +216,7 @@ export function serve( config: ServeConfig ): OosHandler {
                     condition,
                     status,
                     durationMs: Math.round( performance.now() - requestStart ),
-                    timestamp: now2,
+                    timestamp: now,
                 } );
             } else {
                 lastCondition = condition;
@@ -226,7 +224,10 @@ export function serve( config: ServeConfig ): OosHandler {
 
             return { status, headers, body };
         } catch {
-            // Never leak internal errors — return a controlled response
+            // Never leak internal errors — return a controlled response.
+            // Hooks are intentionally NOT emitted on error — the error
+            // path returns a pre-computed unknown response that shouldn't
+            // be treated as a real condition transition.
             return errorResult;
         }
     };

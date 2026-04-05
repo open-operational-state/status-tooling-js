@@ -47,22 +47,6 @@ app.use( '*', discoveryHeaders() );
 
 **Files:** `src/discovery-middleware.ts`
 
-### Observable Hooks
-
-Event hooks for condition transitions and check failures:
-
-```ts
-handler.on( 'conditionChanged', ( { previous, current, timestamp } ) => {
-    logger.info( `Health: ${previous} → ${current}` );
-} );
-
-handler.on( 'checkFailed', ( { name, error, timedOut } ) => {
-    logger.warn( `Check ${name} failed: ${error.message}` );
-} );
-```
-
-No external dependencies — uses a minimal internal event emitter pattern.
-
 ### Testing Utilities
 
 A `testHandler()` utility for verifying health endpoint output in test suites:
