@@ -6,67 +6,9 @@
 
 ## Producer SDK (`@open-operational-state/oos`)
 
-### Content Negotiation
-
-When both serialization formats are configured, the handler should inspect the `Accept` header and respond with the appropriate format:
-
-- `Accept: application/health+json` → health-response format
-- `Accept: application/status+json` → service-status format
-- `Accept: */*` or missing → default (health-response)
-
-This requires a new `content-negotiation.ts` module and a `serialization` option on `ServeConfig` that accepts an array of formats.
-
-**Files:** `src/content-negotiation.ts`, `src/__tests__/content-negotiation.test.ts`
-
-### Discovery Handler
-
-A `createDiscoveryHandler()` factory that serves the `/.well-known/operational-state` discovery document. Health responses would automatically include a `Link` header pointing to the discovery endpoint.
-
-```ts
-const discoveryHandler = createDiscoveryHandler( {
-    subject: { id: 'my-api' },
-    resources: [
-        { href: '/health', profiles: [ 'health' ], serialization: 'application/health+json' },
-    ],
-} );
-```
-
-**Files:** `src/discovery-handler.ts`, `src/__tests__/discovery-handler.test.ts`
-
-### Discovery Link Header Middleware
-
-An optional middleware that adds a `Link: </.well-known/operational-state>; rel="operational-state"` header to every HTTP response — not just the health endpoint. This enables the discovery flow where a consumer hitting *any* URL can discover the operational state endpoint.
-
-```ts
-// Express
-app.use( discoveryHeaders() );
-
-// Hono
-app.use( '*', discoveryHeaders() );
-```
-
-**Files:** `src/discovery-middleware.ts`
-
 ### Testing Utilities
 
-A `testHandler()` utility for verifying health endpoint output in test suites:
-
-```ts
-import { testHandler } from '@open-operational-state/oos/testing';
-
-const result = await testHandler( myHandler );
-expect( result.snapshot.condition ).toBe( 'operational' );
-expect( result.validation.valid ).toBe( true );
-expect( result.conformance.basic ).toBe( true );
-```
-
-Pipes handler output through `validateSnapshot` and conformance checking automatically.
-
-**Files:** `src/testing.ts`, `src/__tests__/testing.test.ts`
-
-### `serve()` + Check Registry Integration
-
-Currently `serve()` and `createCheckRegistry()` integrate through the `conditionProvider` callback. A tighter integration would allow `serve()` to accept a registry directly and automatically merge check results into the snapshot (populating `checks`, `components`, and `evidence` fields based on exposure tier).
+A `testHandler()` utility for verifying health endpoint output in test suites. Currently deferred — the inline pattern (`validateSnapshot` + `checkConformanceLevel`) is only a few lines, making a dedicated subpath export (`oos/testing`) insufficient value for the packaging overhead.
 
 ### Benchmarks
 

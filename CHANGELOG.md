@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **oos**: `createHooks()` — typed event emitter for observable hooks. Events: `conditionChanged`, `checkFailed`, `requestHandled`. Zero dependencies, synchronous dispatch, listener error isolation (including async rejection handling).
+- **oos**: `serve()` hooks integration — optional `hooks` config field for lifecycle event emission with condition transition tracking.
+- **oos**: `negotiateFormat()` and `mediaTypeFor()` — content negotiation module. Parses `Accept` header, selects between `application/health+json` and `application/status+json`. `serve()` gains `serialization` config for single or dual-format serving.
+- **oos**: `createDiscoveryHandler()` — serves the `/.well-known/operational-state` discovery document as a pre-built static response with cache-control and Link headers.
+- **oos**: `discoveryLinkHeader()` — framework-agnostic Link header string builder for OOS discovery. `serve()` gains `discoveryPath` config to auto-add Link headers.
+- **oos**: `serve()` + check registry integration — optional `registry` config field. When set, runs `registry.runAll()` per request, uses aggregated condition, merges check results via `enrichSnapshot()`, and emits `checkFailed` hooks for errored/timed-out checks.
 - **oos**: `serve()` handler factory — producer-side API that creates spec-conformant `application/health+json` responses. Accepts static or async condition providers with authentication-based exposure tier switching.
 - **oos**: Named constants (`Condition`, `Profile`, `Exposure`, `Serialization`, `ProvenanceType`, `Role`) — eliminate magic strings, provide autocomplete and typo protection.
 - **oos**: `filterByExposure()` — security-tier filtering with 4 levels: condition-only (secure default), condition-metadata, component-level, full-diagnostic. Applied before serialization.
