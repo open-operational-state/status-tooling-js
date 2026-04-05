@@ -21,6 +21,12 @@ interface NodeHttpAdapterOptions {
     path?: string;
 }
 
+/** Fallback headers for error responses. */
+const ERROR_HEADERS: Record<string, string> = {
+    'Content-Type': 'application/health+json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+};
+
 /**
  * Wraps an OosHandler as a plain node:http request handler.
  *
@@ -35,11 +41,19 @@ export function nodeHttpAdapter(
     const targetPath = options?.path;
 
     return ( req, res ) => {
-        // Path filtering
-        if ( targetPath && req.url !== targetPath ) {
-            res.writeHead( 404, { 'Content-Type': 'text/plain' } );
-            res.end( 'Not Found' );
-            return;
+        // Path filtering — parse pathname to handle query strings
+        if ( targetPath && req.url ) {
+            let pathname: string;
+            try {
+                pathname = new URL( req.url, 'http://localhost' ).pathname;
+            } catch {
+                pathname = req.url;
+            }
+            if ( pathname !== targetPath ) {
+                res.writeHead( 404, { 'Content-Type': 'text/plain' } );
+                res.end( 'Not Found' );
+                return;
+            }
         }
 
         // Map node:http headers → OosRequest
@@ -54,8 +68,8 @@ export function nodeHttpAdapter(
                 res.end( JSON.stringify( result.body ) );
             } )
             .catch( () => {
-                // Never leak internal errors — controlled unknown response
-                res.writeHead( 503, { 'Content-Type': 'application/health+json' } );
+                // Never leak internal errors — controlled response
+                res.writeHead( 200, ERROR_HEADERS );
                 res.end( JSON.stringify( { condition: 'unknown' } ) );
             } );
     };

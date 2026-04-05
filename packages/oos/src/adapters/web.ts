@@ -39,20 +39,35 @@ export function webAdapter(
             }
         }
 
-        // Map Web Standard Request → OosRequest
-        const headers: Record<string, string | undefined> = {};
-        request.headers.forEach( ( value, key ) => {
-            headers[key] = value;
-        } );
+        try {
+            // Map Web Standard Request → OosRequest
+            const headers: Record<string, string | undefined> = {};
+            request.headers.forEach( ( value, key ) => {
+                headers[key] = value;
+            } );
 
-        const result = await handler( { headers, url: request.url } );
+            const result = await handler( { headers, url: request.url } );
 
-        return new Response(
-            JSON.stringify( result.body ),
-            {
-                status: result.status,
-                headers: result.headers,
-            },
-        );
+            return new Response(
+                JSON.stringify( result.body ),
+                {
+                    status: result.status,
+                    headers: result.headers,
+                },
+            );
+        } catch {
+            // serve() already catches internally — this guards against
+            // catastrophic failures in header mapping or serialization
+            return new Response(
+                JSON.stringify( { condition: 'unknown' } ),
+                {
+                    status: 200,
+                    headers: {
+                        'Content-Type': 'application/health+json',
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    },
+                },
+            );
+        }
     };
 }

@@ -33,8 +33,18 @@ export function fastifyAdapter(
             headers[key] = Array.isArray( value ) ? value[0] : value;
         }
 
-        const result = await handler( { headers, url: request.url } );
+        try {
+            const result = await handler( { headers, url: request.url } );
 
-        reply.status( result.status ).headers( result.headers ).send( result.body );
+            reply.status( result.status ).headers( result.headers ).send( result.body );
+        } catch {
+            reply
+                .status( 200 )
+                .headers( {
+                    'Content-Type': 'application/health+json',
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                } )
+                .send( { condition: 'unknown' } );
+        }
     };
 }

@@ -243,3 +243,48 @@ describe( 'profiles and provenance', () => {
         expect( body.provenance ).toBe( 'derived' );
     } );
 } );
+
+// ---------------------------------------------------------------------------
+// Error handling
+// ---------------------------------------------------------------------------
+
+describe( 'error handling', () => {
+    test( 'returns controlled unknown response when condition provider throws', async () => {
+        const handler = serve( {
+            subject: { id: 'test-api' },
+            condition: () => { throw new Error( 'db connection lost' ); },
+        } );
+        const result = await handler( minimalRequest() );
+        const body = result.body as Record<string, unknown>;
+
+        expect( result.status ).toBe( 200 );
+        expect( body.condition ).toBe( 'unknown' );
+        expect( result.headers['Content-Type'] ).toBe( 'application/health+json' );
+    } );
+
+    test( 'returns controlled unknown response when async provider rejects', async () => {
+        const handler = serve( {
+            subject: { id: 'test-api' },
+            condition: async () => { throw new Error( 'timeout' ); },
+        } );
+        const result = await handler( minimalRequest() );
+
+        expect( result.status ).toBe( 200 );
+        expect( ( result.body as Record<string, unknown> ).condition ).toBe( 'unknown' );
+    } );
+
+    test( 'returns controlled response when isAuthenticated throws', async () => {
+        const handler = serve( {
+            subject: { id: 'test-api' },
+            exposure: Exposure.CONDITION_ONLY,
+            authenticatedExposure: Exposure.FULL_DIAGNOSTIC,
+            isAuthenticated: () => { throw new Error( 'auth service down' ); },
+        } );
+        const result = await handler( {
+            headers: { authorization: 'Bearer xxx' },
+        } );
+
+        expect( result.status ).toBe( 200 );
+        expect( ( result.body as Record<string, unknown> ).condition ).toBe( 'unknown' );
+    } );
+} );

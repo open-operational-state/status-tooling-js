@@ -38,17 +38,25 @@ export function h3Adapter(
             headers[key] = Array.isArray( value ) ? value[0] : value;
         }
 
-        const result = await handler( {
-            headers,
-            url: event.node.req.url,
-        } );
+        try {
+            const result = await handler( {
+                headers,
+                url: event.node.req.url,
+            } );
 
-        event.node.res.statusCode = result.status;
-        for ( const [ key, value ] of Object.entries( result.headers ) ) {
-            event.node.res.setHeader( key, value );
+            event.node.res.statusCode = result.status;
+            for ( const [ key, value ] of Object.entries( result.headers ) ) {
+                event.node.res.setHeader( key, value );
+            }
+
+            // Return JSON body — h3 auto-serializes objects
+            return result.body;
+        } catch {
+            event.node.res.statusCode = 200;
+            event.node.res.setHeader( 'Content-Type', 'application/health+json' );
+            event.node.res.setHeader( 'Cache-Control', 'no-cache, no-store, must-revalidate' );
+
+            return { condition: 'unknown' };
         }
-
-        // Return JSON body — h3 auto-serializes objects
-        return result.body;
     };
 }

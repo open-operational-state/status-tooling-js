@@ -1,17 +1,20 @@
 /**
- * Web Standard Server Example (Bun / Deno / Next.js)
+ * Bun Server Example
  *
- * Demonstrates OOS serve() with the Web Standard adapter.
+ * Demonstrates OOS serve() with Bun.serve using the Web Standard adapter.
  *
  * Run:   bun run examples/web-server.ts
  * Probe: oos probe http://localhost:3000/health
+ *
+ * The same webAdapter() works with Deno.serve and Cloudflare Workers —
+ * replace the Bun.serve call with the equivalent for your runtime.
  */
 
 import { serve, Condition, Exposure, Profile } from '../src/index.js';
 import { webAdapter } from '../src/adapters/web.js';
 
 const handler = serve( {
-    subject: { id: 'example-web-api', description: 'Web Standard Example' },
+    subject: { id: 'example-bun-api', description: 'Bun Server Example' },
     condition: Condition.OPERATIONAL,
     exposure: Exposure.CONDITION_METADATA,
     profiles: [ Profile.HEALTH ],
@@ -19,7 +22,6 @@ const handler = serve( {
 
 const fetch = webAdapter( handler, { path: '/health' } );
 
-// Works with Bun.serve, Deno.serve, or Cloudflare Workers
 const server = Bun.serve( {
     port: 3000,
     fetch,

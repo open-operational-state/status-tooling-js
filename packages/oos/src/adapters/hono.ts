@@ -32,8 +32,19 @@ export function honoAdapter(
             headers[key] = value;
         } );
 
-        const result = await handler( { headers, url: c.req.url } );
+        try {
+            const result = await handler( { headers, url: c.req.url } );
 
-        return c.json( result.body, result.status, result.headers );
+            return c.json( result.body, result.status, result.headers );
+        } catch {
+            return c.json(
+                { condition: 'unknown' },
+                200,
+                {
+                    'Content-Type': 'application/health+json',
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                },
+            );
+        }
     };
 }

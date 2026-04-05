@@ -29,8 +29,8 @@ export function filterByExposure(
         case Exposure.COMPONENT_LEVEL:
             return filterComponentLevel( snapshot );
         case Exposure.FULL_DIAGNOSTIC:
-            // No filtering — return a shallow copy to avoid mutation
-            return { ...snapshot };
+            // No filtering — return the original snapshot as-is
+            return snapshot;
         default:
             // Unrecognised tier falls back to the most restrictive
             return filterConditionOnly( snapshot );

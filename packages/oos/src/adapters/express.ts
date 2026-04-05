@@ -33,8 +33,17 @@ export function expressAdapter(
             headers[key] = Array.isArray( value ) ? value[0] : value;
         }
 
-        const result = await handler( { headers, url: req.url } );
+        try {
+            const result = await handler( { headers, url: req.url } );
 
-        res.status( result.status ).set( result.headers ).json( result.body );
+            res.status( result.status ).set( result.headers ).json( result.body );
+        } catch {
+            res.status( 200 )
+                .set( {
+                    'Content-Type': 'application/health+json',
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                } )
+                .json( { condition: 'unknown' } );
+        }
     };
 }

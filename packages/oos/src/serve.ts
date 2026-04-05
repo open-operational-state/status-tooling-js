@@ -9,7 +9,7 @@
  * configured otherwise.
  */
 
-import type { Snapshot, Timing, ProfileId } from '@open-operational-state/types';
+import type { Snapshot, Timing } from '@open-operational-state/types';
 import { emitHealthResponse } from '@open-operational-state/emitter';
 import { suggestHttpStatus, suggestHeaders } from '@open-operational-state/emitter';
 import { Condition, Exposure, Profile, ProvenanceType, Serialization } from './constants.js';
@@ -81,7 +81,7 @@ export interface ServeConfig {
     /** Provenance type.  Default: 'self-reported'. */
     provenance?: string;
 
-    /** Whether to validate output at startup.  Default: false. */
+    /** Whether to validate output on first request.  Default: false. */
     validate?: boolean;
 }
 
@@ -128,55 +128,74 @@ export function serve( config: ServeConfig ): OosHandler {
     // ── Self-validation on first invocation ───────────────────────────
     let validated = !config.validate;
 
+    // ── Pre-compute error fallback (never changes, zero per-request alloc) ──
+    const mediaType = Serialization.HEALTH_RESPONSE_MEDIA_TYPE as
+        'application/health+json' | 'application/status+json';
+
+    const errorSnapshot: Snapshot = {
+        condition: Condition.UNKNOWN,
+        profiles: [ ...profiles ],
+        subject,
+    };
+    const errorFiltered = filterByExposure( errorSnapshot, defaultExposure );
+    const errorResult: HandlerResult = Object.freeze( {
+        status: 200,
+        headers: suggestHeaders( errorFiltered, mediaType ),
+        body: emitHealthResponse( errorFiltered ),
+    } );
+
     // ── Handler ───────────────────────────────────────────────────────
     const handler: OosHandler = async ( request ) => {
-        // Resolve condition
-        const condition = typeof conditionProvider === 'function'
-            ? await conditionProvider()
-            : conditionProvider;
+        try {
+            // Resolve condition
+            const condition = typeof conditionProvider === 'function'
+                ? await conditionProvider()
+                : conditionProvider;
 
-        // Build timing
-        const now = new Date().toISOString();
-        const timing: Timing = {
-            observed: now,
-            reported: now,
-        };
+            // Build timing
+            const now = new Date().toISOString();
+            const timing: Timing = {
+                observed: now,
+                reported: now,
+            };
 
-        // Build snapshot (full, pre-filter)
-        const snapshot: Snapshot = {
-            condition,
-            profiles: [ ...profiles ],
-            subject,
-            timing,
-            provenance,
-        };
+            // Build snapshot (full, pre-filter)
+            const snapshot: Snapshot = {
+                condition,
+                profiles: [ ...profiles ],
+                subject,
+                timing,
+                provenance,
+            };
 
-        // Determine exposure tier
-        let exposure = defaultExposure;
-        if ( authenticatedExposure && isAuthenticated ) {
-            const authed = await isAuthenticated( request );
-            if ( authed ) {
-                exposure = authenticatedExposure;
+            // Determine exposure tier
+            let exposure = defaultExposure;
+            if ( authenticatedExposure && isAuthenticated ) {
+                const authed = await isAuthenticated( request );
+                if ( authed ) {
+                    exposure = authenticatedExposure;
+                }
             }
+
+            // Filter by exposure tier (BEFORE serialization)
+            const filtered = filterByExposure( snapshot, exposure );
+
+            // Self-validation (once, on first request)
+            if ( !validated ) {
+                validated = true;
+                selfValidate( filtered, profiles as string[] );
+            }
+
+            // Serialize
+            const body = emitHealthResponse( filtered );
+            const status = suggestHttpStatus( filtered.condition );
+            const headers = suggestHeaders( filtered, mediaType );
+
+            return { status, headers, body };
+        } catch {
+            // Never leak internal errors — return a controlled response
+            return errorResult;
         }
-
-        // Filter by exposure tier (BEFORE serialization)
-        const filtered = filterByExposure( snapshot, exposure );
-
-        // Self-validation (once, on first request)
-        if ( !validated ) {
-            validated = true;
-            selfValidate( filtered, profiles as string[] );
-        }
-
-        // Serialize
-        const mediaType = Serialization.HEALTH_RESPONSE_MEDIA_TYPE as
-            'application/health+json' | 'application/status+json';
-        const body = emitHealthResponse( filtered );
-        const status = suggestHttpStatus( filtered.condition );
-        const headers = suggestHeaders( filtered, mediaType );
-
-        return { status, headers, body };
     };
 
     return handler;

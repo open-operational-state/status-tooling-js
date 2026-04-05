@@ -30,10 +30,19 @@ export function koaAdapter(
             headers[key] = Array.isArray( value ) ? value[0] : value;
         }
 
-        const result = await handler( { headers, url: ctx.url } );
+        try {
+            const result = await handler( { headers, url: ctx.url } );
 
-        ctx.status = result.status;
-        ctx.set( result.headers );
-        ctx.body = result.body;
+            ctx.status = result.status;
+            ctx.set( result.headers );
+            ctx.body = result.body;
+        } catch {
+            ctx.status = 200;
+            ctx.set( {
+                'Content-Type': 'application/health+json',
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+            } );
+            ctx.body = { condition: 'unknown' };
+        }
     };
 }
