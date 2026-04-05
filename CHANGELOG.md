@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
-## [Unreleased]
+## [0.3.0] — 2026-04-05
 
 ### Added
 - **oos**: `createHooks()` — typed event emitter for observable hooks. Events: `conditionChanged`, `checkFailed`, `requestHandled`. Zero dependencies, synchronous dispatch, listener error isolation (including async rejection handling).
