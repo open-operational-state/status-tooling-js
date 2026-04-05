@@ -25,21 +25,27 @@ npx oos probe https://api.example.com/health
 
 ## Programmatic Usage
 
-### Producer — expose operational state
+### Producer SDK — expose operational state
 
 ```js
+// Express
+import { serve } from '@open-operational-state/oos';
+import { toExpressHandler } from '@open-operational-state/oos/express';
+
+const handler = serve( { subject: { id: 'my-api', version: '1.2.0' } } );
+app.get( '/health', toExpressHandler( handler ) );
+```
+
+```js
+// Next.js App Router (app/health/route.js)
 import { serve } from '@open-operational-state/oos';
 import { toWebHandler } from '@open-operational-state/oos/web';
 
-const handler = serve( {
-    subject: { id: 'my-api', version: '1.2.0' },
-} );
-
-// Bun / Deno / Cloudflare Workers
-export default { fetch: toWebHandler( handler ) };
+const handler = serve( { subject: { id: 'my-api' } } );
+export const GET = toWebHandler( handler );
 ```
 
-See the [oos README](packages/oos/README.md) for check registries, hooks, content negotiation, discovery, and all 7 framework adapters.
+Adapters available for Express, Next.js, Fastify, Hono, Koa, Nuxt/Nitro, and Node `http`. See the [oos README](packages/oos/README.md) for check registries, hooks, content negotiation, discovery, and all 7 framework adapters.
 
 ### Consumer SDK — probe any endpoint
 
